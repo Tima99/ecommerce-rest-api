@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { signup } from "../controllers";
+import { auth, update } from "../controllers";
 
 const route = Router()
 
-route.post('/signup', signup.sendOtp)
+route.post('/otp', auth.sendOtp)
+route.post('/signup', auth.createUser)
+route.post('/login/otp', auth.sendOtp)
+route.post('/update/profile', update.profile)
 
 export {route as postRoutes}

@@ -4,10 +4,19 @@ import cookieParser from "cookie-parser"
 import { getRoutes } from "./routes/getRoutes"
 import { postRoutes } from "./routes/postRoutes"
 import { connect } from "mongoose"
+import cors from "cors"
+import authentication from "./middlewares/authenticate"
 const app = express()
 
+const corsOptions = {
+    origin : "http://localhost:3000",
+    credentials : true
+}
+
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
+app.use('/', authentication)
 app.use('/api', getRoutes)
 app.use('/api', postRoutes)
 

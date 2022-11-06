@@ -1,7 +1,9 @@
-import { response } from "express";
+// import { response } from "express";
 import twilio from "twilio"
 import { TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from "../config"
 import Otp from "../models/otpModel";
+import User from "../models/userModel";
+import jwtSaveToClient from "../services/jwtSaveToClient";
 
 export const otp = {
     async send(toPhone, OTP) {
@@ -34,7 +36,13 @@ export const otp = {
 
             // const deleteOtpDoc = await Otp.deleteOne({phone})
 
-            res.status(200).send("Otp Verified!")
+            //Otp Verified - find user
+            const userDoc = await User.findOne({phone}, { __v:0})
+            
+            // if user exist set there jsonweb token
+            const user = await jwtSaveToClient(userDoc, res)
+            
+            res.status(200).send(user)
         }
         catch(err){
             console.log(err);

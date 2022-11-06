@@ -1,2 +1,3 @@
 export {otp} from './otp'
-export {signup} from './signup'
+export {auth} from './auth'
+export {update} from './update'
