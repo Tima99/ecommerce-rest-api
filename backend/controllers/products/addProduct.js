@@ -10,6 +10,7 @@ export async function addProduct(req, res){
         
         const productDoc = new Product({
             ...productDetails,
+            productId: req.params.productId,
             images: req.files.map(file => `/${file.filename}`)
         })
 
@@ -25,6 +26,9 @@ export async function addProduct(req, res){
         res.send(product)
     } catch (error) {
         console.log(error);
+        if(error.code == 11000 && error.keyPattern.productId){
+            return res.status(409).send("Product Id is not unique.")
+        }
         res.status(500).send("Try After Somtime.")
     }
 }

@@ -14,8 +14,8 @@ route.post('/create/admin', createAdmin)
 route.post('/login', login)
 
 // products
-route.post('/add/product', upload.array("images"),addProduct)
+route.post('/add/product/:productId', upload.array("images"),addProduct)
 route.post('/remove/product', removeProduct)
-route.post('/edit/product', upload.array('add-new-images') ,editProduct)
+route.post('/edit/product/:productId', upload.array('add-new-images') ,editProduct)
 
 export {route as postRoutes}

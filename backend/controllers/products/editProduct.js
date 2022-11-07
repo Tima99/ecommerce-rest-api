@@ -24,10 +24,15 @@ export async function editProduct(req, res){
         const {images} = editProduct
 
         const userFolderName = crypto.createHash('md5').update(req.credentials.phone).digest('hex')
-        const uploadPath = path.join(__dirname, '../../uploads', userFolderName)
+
+        const productFolderName = req.params.productId
+        
+        const uploadPath = path.join(__dirname, '../../uploads', userFolderName, productFolderName)
+        console.log(uploadPath)
         
         // remove not required images
         fs.readdir(uploadPath, (err, files)=>{
+            console.log(files)
             files.forEach(file=> {
                 if(isArray(images)){
                     const isExist = images.every(path => !path.includes(file) )

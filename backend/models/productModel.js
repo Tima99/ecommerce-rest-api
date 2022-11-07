@@ -9,7 +9,8 @@ const productSchema = new Schema({
     originalPrice: {type: Number},
     discountPrice: {type: Number, default: 0},
     priceSymbol: {type: String},
-    additional: {type: String}
+    additional: {type: String},
+    productId: {type: String, unique: true, required: true, index: true}
 })
 
 const Product = mongoose.model("Product", productSchema, "products")

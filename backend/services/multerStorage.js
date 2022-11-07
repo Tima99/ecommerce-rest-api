@@ -12,12 +12,13 @@ const storage = multer.diskStorage({
         const extension = file.originalname.slice(-(file.originalname.length - file.originalname.lastIndexOf('.')-1)) 
         // create folder for specific user if not 
         if(!req.credentials) return
-        const userFolder = crypto.createHash('md5').update(req.credentials.phone).digest('hex')
+        const userFolder    = crypto.createHash('md5').update(req.credentials.phone).digest('hex')
+        const productFolder = req.params.productId
+        
+        if(!fs.existsSync(`${uploadFolder}/${userFolder}/${productFolder}`))
+            fs.mkdirSync(`${uploadFolder}/${userFolder}/${productFolder}`, {recursive: true})
 
-        if(!fs.existsSync(`${uploadFolder}/${userFolder}`))
-            fs.mkdirSync(`${uploadFolder}/${userFolder}`)
-
-        cb(null, `${userFolder}/${file.fieldname}-${uuid}.${extension}` )
+        cb(null, `${userFolder}/${productFolder}/${file.fieldname}-${uuid}.${extension}` )
     }
 })
 
