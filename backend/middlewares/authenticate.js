@@ -1,10 +1,21 @@
 import { verify } from "jsonwebtoken";
 import { JWT_SECRET_KEY } from "../config";
 import User from '../models/userModel'
+import Seller from '../models/sellerModel'
 
 export const authenticate = async(req, res) => {
-    if(req.userDocs){
-        const user = req.userDocs.toObject()
+    if(req.token){
+        const {phone, role} = req.credentials
+        let doc = null
+        if(role === 'consumer'){
+            doc  = await User.findOne({ phone })
+            if(!doc) throw new Error('Unauthorised User try to access. Login or Create One.')
+        }else if(role === 'seller'){
+            doc = await Seller.findOne({phone})
+            if(!doc) throw new Error('Unauthorised Seller try to access. Create or login.')
+        }
+        
+        const user = doc.toObject()
         delete user._id
         delete user.__v
         delete user.jwt
@@ -22,16 +33,12 @@ const authentication = async (req , res , next) =>{
         if(!acess_token) throw new Error('Invalid User')
         
 
-        const {phone} = verify(acess_token , JWT_SECRET_KEY)
+        const {phone, role} = verify(acess_token , JWT_SECRET_KEY)
         // console.log(`Authenticate phone : ${phone}`)
 
         if(!phone) throw new Error('Invalid Jwt')
         
-        const userDocs = await User.findOne({ phone })
-
-        if(!userDocs) throw new Error('Unauthorised User try to access. Login or Create One ,first.')
-        
-        req.userDocs = userDocs;
+        req.credentials = {phone, role}
         req.token = acess_token;
 
         next();

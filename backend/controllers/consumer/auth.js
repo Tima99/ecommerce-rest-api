@@ -3,18 +3,24 @@ import { validate } from "../../services/validate"
 import { otp } from "./otp"
 import User from "../../models/userModel"
 import jwtSaveToClient from "../../services/jwtSaveToClient"
+import Seller from "../../models/sellerModel"
 
 export const auth = {
     sendOtp: async(req, res)=> {
         try{
-            const {phone, login} = req.body
+            const {phone, login, role="consumer"} = req.body
             // console.log(phone)
             const isPhoneValid = validate.phone(phone)
             if(!isPhoneValid) return res.status(422).send("⚠ Please provide valid phone number.")
-
-            const userAlreadyExists = await User.findOne({phone})
-            if(userAlreadyExists && !login) return res.status(401).send('User Already Exists.Please visit Log in.')
-            else if(!userAlreadyExists && login) return res.status(401).send('User not found. Create one.')
+            if(role === "consumer"){
+                const userAlreadyExists = await User.findOne({phone})
+                if(userAlreadyExists && !login) return res.status(401).send('User Already Exists.Please visit Log in.')
+                else if(!userAlreadyExists && login) return res.status(401).send('User not found. Create one.')
+            }else{
+                const userAlreadyExists = await Seller.findOne({phone})
+                if(userAlreadyExists && !login) return res.status(401).send('Seller Already Exists.Please visit Log in.')
+                else if(!userAlreadyExists && login) return res.status(401).send('Seller not found. Create one.')
+            }
 
             // findOne returns null if no model found than creates new one
             // instance creates with model is known as document
@@ -48,7 +54,7 @@ export const auth = {
             const userCreated = await userDoc.save()
 
             // if user exist set there jsonweb token
-            const sendUser = await jwtSaveToClient(userCreated, res)
+            const sendUser = await jwtSaveToClient(userCreated,{phone : userDoc.phone, role: 'consumer'} ,res)
 
             res.status(200).send(sendUser)
 
@@ -61,6 +67,8 @@ export const auth = {
     logout: async(req, res)=>{
         try{
             res.clearCookie('jwt')
+            // if role is seller than send response as no need to remove cookie from jwt array 
+            if(req.credentials.role === 'seller') {return res.send("Logout sucess.")}
 
             const {phone} = req.params
             

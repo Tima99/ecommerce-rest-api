@@ -2,6 +2,7 @@
 import twilio from "twilio"
 import { TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from "../../config"
 import Otp from "../../models/otpModel";
+import Seller from "../../models/sellerModel";
 import User from "../../models/userModel";
 import jwtSaveToClient from "../../services/jwtSaveToClient";
 
@@ -25,7 +26,8 @@ export const otp = {
 
     async verify(req, res){
         try{
-            const {phone, otp : userOtp} = req.params
+            const {phone, otp : userOtp} = req.params || req.body
+            
             const otpDoc = await Otp.findOne({phone})
             if(!otpDoc) return res.status(401).send("Number not found! Try Again.")
 
@@ -36,13 +38,26 @@ export const otp = {
 
             // const deleteOtpDoc = await Otp.deleteOne({phone})
 
-            //Otp Verified - find user
-            const userDoc = await User.findOne({phone}, { __v:0})
             
             // if user exist set there jsonweb token
-            const user = await jwtSaveToClient(userDoc, res)
+            let payload = null, doc = null;
+            if(req.params){
+                doc = await User.findOne({phone}, { __v:0})
+                payload = {phone : doc && doc.phone, role: 'consumer'}
+            }
+            else{
+                doc = await Seller.findOne({phone}, { __v:0})
+                payload = {phone : doc && doc.phone, role: 'seller'}
+            }
+
+            const user = await jwtSaveToClient(doc, payload ,res)
             
-            res.status(200).send(user)
+            if(req.params)
+                res.status(200).send(user)
+            else{
+                if(res) return res.status(200).send(doc)
+                Promise.resolve(req.sellerDoc)
+            }
         }
         catch(err){
             console.log(err);
