@@ -1,4 +1,4 @@
-import { PORT, DB_URL } from "./config"
+import { PORT, DB_URL, uploadPath } from "./config"
 import express from "express"
 import cookieParser from "cookie-parser"
 import { getRoutes } from "./routes/getRoutes"
@@ -6,6 +6,8 @@ import { postRoutes } from "./routes/postRoutes"
 import { connect } from "mongoose"
 import cors from "cors"
 import authentication from "./middlewares/authenticate"
+import fs from 'fs'
+
 const app = express()
 
 const corsOptions = {
@@ -13,12 +15,18 @@ const corsOptions = {
     credentials : true
 }
 
+app.use(express.static(uploadPath))
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
+// app.use(upload)
 app.use('/', authentication)
 app.use('/api', getRoutes)
 app.use('/api', postRoutes)
+
+// create folder where images upload
+if(!fs.existsSync(uploadPath))
+    fs.mkdirSync(uploadPath)
 
 // start server
 app.listen(PORT, err=> err ? console.log(err) : console.log(`Server Listening on http://localhost:${PORT}/api/`))

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { auth, update, createAdmin, login } from "../controllers";
+import { auth, update, createAdmin, login, addProduct, removeProduct, editProduct } from "../controllers";
+import upload from "../services/multerStorage";
 
 const route = Router()
 
@@ -10,7 +11,11 @@ route.post('/update/profile', update.profile)
 
 // admin or seller
 route.post('/create/admin', createAdmin)
-// login for seller
 route.post('/login', login)
+
+// products
+route.post('/add/product', upload.array("images"),addProduct)
+route.post('/remove/product', removeProduct)
+route.post('/edit/product', upload.array('add-new-images') ,editProduct)
 
 export {route as postRoutes}
