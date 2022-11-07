@@ -1,3 +1,3 @@
-export {otp} from './otp'
-export {auth} from './auth'
-export {update} from './update'
+export {otp} from './consumer/otp'
+export {auth} from './consumer/auth'
+export {update} from './consumer/update'

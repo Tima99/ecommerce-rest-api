@@ -1,8 +1,8 @@
-import Otp from "../models/otpModel"
-import { validate } from "../services/validate"
+import Otp from "../../models/otpModel"
+import { validate } from "../../services/validate"
 import { otp } from "./otp"
-import User from "../models/userModel"
-import jwtSaveToClient from "../services/jwtSaveToClient"
+import User from "../../models/userModel"
+import jwtSaveToClient from "../../services/jwtSaveToClient"
 
 export const auth = {
     sendOtp: async(req, res)=> {

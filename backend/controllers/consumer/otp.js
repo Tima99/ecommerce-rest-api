@@ -1,9 +1,9 @@
 // import { response } from "express";
 import twilio from "twilio"
-import { TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from "../config"
-import Otp from "../models/otpModel";
-import User from "../models/userModel";
-import jwtSaveToClient from "../services/jwtSaveToClient";
+import { TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from "../../config"
+import Otp from "../../models/otpModel";
+import User from "../../models/userModel";
+import jwtSaveToClient from "../../services/jwtSaveToClient";
 
 export const otp = {
     async send(toPhone, OTP) {
