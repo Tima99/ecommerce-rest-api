@@ -1,4 +1,4 @@
-import { PORT, DB_URL, uploadPath } from "./config"
+import { PORT, DB_URL, uploadFolder } from "./config"
 import express from "express"
 import cookieParser from "cookie-parser"
 import { getRoutes } from "./routes/getRoutes"
@@ -15,7 +15,7 @@ const corsOptions = {
     credentials : true
 }
 
-app.use(express.static(uploadPath))
+app.use(express.static(uploadFolder))
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
@@ -25,8 +25,8 @@ app.use('/api', getRoutes)
 app.use('/api', postRoutes)
 
 // create folder where images upload
-if(!fs.existsSync(uploadPath))
-    fs.mkdirSync(uploadPath)
+if(!fs.existsSync(uploadFolder))
+    fs.mkdirSync(uploadFolder)
 
 // start server
 app.listen(PORT, err=> err ? console.log(err) : console.log(`Server Listening on http://localhost:${PORT}/api/`))
