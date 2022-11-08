@@ -9,3 +9,5 @@ export {login} from "./seller/login"
 export {addProduct} from "./products/addProduct"
 export {removeProduct} from "./products/removeProduct"
 export {editProduct} from "./products/editProduct"
+
+export {search} from "./search/search"
