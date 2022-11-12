@@ -1,12 +1,34 @@
 // import { response } from "express";
 import twilio from "twilio"
-import { TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } from "../../config"
+import { TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER, VONAGE_API_KEY, VONAGE_API_SECRET } from "../../config"
 import Otp from "../../models/otpModel";
 import Seller from "../../models/sellerModel";
 import User from "../../models/userModel";
 import jwtSaveToClient from "../../services/jwtSaveToClient";
+import {Vonage} from "@vonage/server-sdk"
 
 export const otp = {
+    async senViaVonage(toPhone, OTP){
+        try {
+
+            const vonage = new Vonage({
+              apiKey: VONAGE_API_KEY,
+              apiSecret: VONAGE_API_SECRET
+            })
+
+            const from = "Ecommerce React"
+            const to = `91${toPhone}`
+            const text = `Verify with OTP ${OTP}`
+
+            const isSend = await vonage.sms.send({from, to, text})
+
+            return true
+        } catch (error) {
+            console.log(error)
+            return Promise.reject(error)
+        }
+    },
+    
     async send(toPhone, OTP) {
         try {
             const client = twilio(TWILIO_SID, TWILIO_AUTH_TOKEN);
@@ -20,21 +42,31 @@ export const otp = {
             return msgId
         }
         catch (err) {
-            return Promise.reject(`${err.message} In File ${__filename} `)
+            // if twilio failed to send passed it to vonage api
+            this.senViaVonage(toPhone, OTP)
+            // return Promise.reject(`${err.message} In File ${__filename} `)
         }
     },
 
     async verify(req, res){
         try{
             const {phone, otp : userOtp} = req.params || req.body
-            
+            // console.log(req.body)
             const otpDoc = await Otp.findOne({phone})
-            if(!otpDoc) return res.status(401).send("Number not found! Try Again.")
+            if(!otpDoc) {
+                if(res)
+                return res.status(401).send("Number not found! Try Again.")
+                return Promise.reject("Number not found! Try Again.")
+            }
 
             const {otp} = otpDoc
 
             // compare given otp with saved otp in database
-            if(userOtp !== otp) return res.status(422).send("Wrong Otp.")
+            if(userOtp !== otp) {
+                if(res)
+                return res.status(422).send("Wrong Otp.")
+                return Promise.reject("Wrong Otp")
+            }
 
             // const deleteOtpDoc = await Otp.deleteOne({phone})
 
@@ -56,7 +88,7 @@ export const otp = {
                 res.status(200).send(user)
             else{
                 if(res) return res.status(200).send(doc)
-                Promise.resolve(req.sellerDoc)
+                return Promise.resolve(req.sellerDoc)
             }
         }
         catch(err){

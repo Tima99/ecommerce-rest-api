@@ -37,13 +37,13 @@ Otherwise errors if found.
 
 ### Sign Up
 
-Make post request on __<WEB_DOMAIN>/signup__ 
+Make post request on __<WEB_DOMAIN>/api/signup__ 
 
 Returns user document which is generated while signup 
 
 ### Update user document
 
-Make post request on __<WEB_DOMAIN>/update/profile__
+Make post request on __<WEB_DOMAIN>/api/update/profile__
 
 Passed data user document to update
 ```
@@ -59,7 +59,7 @@ Returns updated user document
 
 ### Authenticate user 
 
-Make get Request on __<WEB_DOMAIN>/auth__
+Make get Request on __<WEB_DOMAIN>/api/auth__
 
 if user authenticated returns
 userDocument
@@ -68,7 +68,7 @@ Otherwise returns statusCode = 401 and false as data
 
 ## logout 
 
-Make get request on __/logout/<PhoneToLogout>
+Make get request on __/api/logout/<PhoneToLogout>__
 
 On sucess Logout
 
@@ -77,3 +77,17 @@ On sucess Logout
 ```
 
 Otherwise error message if found!
+
+# Seller section
+
+## Post Routes on
+
+### Create Account __/api/create/admin__
+### Login with otp __/api/login__
+### Add Product __/api//add/product/:productId__
+### Remove Product __/api/remove/product__
+### Edit Product __/api/edit/product/:productId__ 
+
+## Get Routes
+
+### Get My Products __/api/my/products__

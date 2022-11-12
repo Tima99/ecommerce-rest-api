@@ -12,6 +12,8 @@ export const {
     TWILIO_SID,
     TWILIO_AUTH_TOKEN,
     TWILIO_NUMBER,
-    JWT_SECRET_KEY
+    JWT_SECRET_KEY,
+    VONAGE_API_KEY,
+    VONAGE_API_SECRET
 } = process.env
 export * from "./global"

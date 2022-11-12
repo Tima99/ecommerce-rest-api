@@ -11,8 +11,11 @@ export async function editProduct(req, res){
             return res.status(422).send("Unauthorised Seller try to edit product.") 
 
         const editProductDetails = req.body
-        if(isArray(editProductDetails.images))
+        // console.log(editProductDetails)
+
+        if(isArray(editProductDetails.images)){
             editProductDetails.images.push(...req.files.map(file => `/${file.filename}`))
+        }
         else if(editProductDetails.images)
             editProductDetails.images = [...req.files.map(file => `/${file.filename}`), editProductDetails.images ]
         else
@@ -28,11 +31,11 @@ export async function editProduct(req, res){
         const productFolderName = req.params.productId
         
         const uploadPath = path.join(__dirname, '../../uploads', userFolderName, productFolderName)
-        console.log(uploadPath)
+        // console.log(uploadPath)
         
         // remove not required images
         fs.readdir(uploadPath, (err, files)=>{
-            console.log(files)
+            // console.log(files)
             files.forEach(file=> {
                 if(isArray(images)){
                     const isExist = images.every(path => !path.includes(file) )

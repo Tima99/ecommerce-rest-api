@@ -5,7 +5,7 @@ export default async function jwtSaveToClient(userDoc, payload ,res){
     let jwt_token;
 
     if(userDoc){
-        const minutesToExpire = 60;
+        const minutesToExpire = 60*24;
         const expiresIn = 60 * minutesToExpire;
         jwt_token = jwt.sign(payload, JWT_SECRET_KEY, {expiresIn})
         // clear and saveTo is res.cookie we passed as arg
