@@ -4,7 +4,7 @@
   "description": "backend server",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node -r esm server.js",
     "dev": "nodemon -r esm server.js"
   },
   "author": "",
