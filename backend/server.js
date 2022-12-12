@@ -11,7 +11,7 @@ import fs from 'fs'
 const app = express()
 
 const corsOptions = {
-    origin : "http://localhost:3000",
+    origin : ['https://swiftstock.netlify.app', "http://localhost:3000"],
     credentials : true
 }
 
